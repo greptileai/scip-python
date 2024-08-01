@@ -4,6 +4,20 @@ Sourcegraph fork of [pyright](https://github.com/microsoft/pyright) focused on g
 
 Project is primarily an addition to Pyright. At this time, there are no substantial changes to the `pyright` library.
 
+### Local Build
+
+```sh
+npm run install:all
+cd packages/pyright-scip
+npm run build
+```
+
+Use in conjunction with `./scip-python` script
+
+### Important Files
+
+The `packages/pyright-scip/src/treeVisitor.ts` contains code for traversing and adding the symbols found.
+
 ## Pre-requisites
 
 ```
@@ -14,7 +28,6 @@ $ npm install -g @sourcegraph/scip-python
 scip-python requires Node v16 or newer. See the [Dockerfile](https://github.com/sourcegraph/scip-python/blob/scip/Dockerfile.autoindex) for an exact SHA that is tested.
 
 scip-python uses `pip` to attempt to determine the versions and names of the packages available in your environment. If you do not use pip to install the packages, you can instead use the `--environment` flag to supply a list of packages to use as the environment. This will skip any calls out to pip to determine the state of your env. See [Environment](##-environment) for more information.
-
 
 ## Usage
 
@@ -67,14 +80,15 @@ The environment file format is a JSON list of `PythonPackage`s. The `PythonPacka
 ```
 
 Where:
-- `name`:
-  - The name of the package. Often times this is the same as the module, but is not always the case.
-  - For example, `PyYAML` is the name of the package, but the module is `yaml` (i.e. `import yaml`).
-- `version`:
-  - The vesion of the package. This is used to generate stable references to external packages.
-- `files`:
-  - A list of all the files that are a member of this package.
-  - Some packages declare multiple modules, so these should all be included.
+
+-   `name`:
+    -   The name of the package. Often times this is the same as the module, but is not always the case.
+    -   For example, `PyYAML` is the name of the package, but the module is `yaml` (i.e. `import yaml`).
+-   `version`:
+    -   The vesion of the package. This is used to generate stable references to external packages.
+-   `files`:
+    -   A list of all the files that are a member of this package.
+    -   Some packages declare multiple modules, so these should all be included.
 
 The environment file should be a list of these packages:
 
@@ -135,9 +149,10 @@ due to adding some additional dependencies.
 
 In general, we've tried to make very little changes to anything inside of the pyright packages.
 The only changes that are inside there at this point are:
-- Not bail out of indexing if it's taking a long time
-- Not throw away indexed files if memory usage gets high
-- Allow parsing of some additional files
+
+-   Not bail out of indexing if it's taking a long time
+-   Not throw away indexed files if memory usage gets high
+-   Allow parsing of some additional files
 
 ## Contributing
 

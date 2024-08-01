@@ -237,6 +237,8 @@ export class TreeVisitor extends ParseTreeWalker {
                 this.document.symbols.push(
                     new scip.SymbolInformation({
                         symbol: symbol.value,
+                        kind: scip.SymbolInformation.Kind.Module,
+                        display_name: fileInfo.moduleName,  
                         documentation,
                     })
                 );
@@ -272,10 +274,11 @@ export class TreeVisitor extends ParseTreeWalker {
                 'markdown',
                 _cancellationToken
             );
-
+            // greptile: ignore for now
             this.document.symbols.push(
                 new scip.SymbolInformation({
                     symbol: this.getScipSymbol(node).value,
+                    kind: scip.SymbolInformation.Kind.Field,
                     documentation: _formatHover(hoverResult!),
                 })
             );
@@ -306,6 +309,8 @@ export class TreeVisitor extends ParseTreeWalker {
                     this.document.symbols.push(
                         new scip.SymbolInformation({
                             symbol: this.getScipSymbol(dec.node).value,
+                            kind: scip.SymbolInformation.Kind.Variable, // greptile: this is just for assignment/variable definitions which should be okay?
+                            display_name: node.leftExpression.value,
                             documentation,
                         })
                     );
@@ -410,6 +415,8 @@ export class TreeVisitor extends ParseTreeWalker {
         this.document.symbols.push(
             new scip.SymbolInformation({
                 symbol: this.getScipSymbol(node).value,
+                kind: scip.SymbolInformation.Kind.Function,
+                display_name: node.name.value,
                 documentation,
                 relationships,
             })
@@ -440,6 +447,8 @@ export class TreeVisitor extends ParseTreeWalker {
             this.document.symbols.push(
                 new scip.SymbolInformation({
                     symbol: symbol.value,
+                    kind: scip.SymbolInformation.Kind.Parameter,
+                    display_name: paramNode.name?.value,
                     documentation: paramDocumentation,
                 })
             );
@@ -783,6 +792,8 @@ export class TreeVisitor extends ParseTreeWalker {
                     this.document.symbols.push(
                         new scip.SymbolInformation({
                             symbol: symbol.value,
+                            kind: scip.SymbolInformation.Kind.Class,
+                            display_name: node.value,
                             documentation,
                             relationships,
                         })
@@ -1453,7 +1464,7 @@ export class TreeVisitor extends ParseTreeWalker {
         // need that.
         this.externalSymbols.set(
             symbol.value,
-            new scip.SymbolInformation({
+            new scip.SymbolInformation({ // greptile: we dont worry about external symbol just yet
                 symbol: symbol.value,
                 documentation: documentation,
             })
@@ -1478,7 +1489,6 @@ export class TreeVisitor extends ParseTreeWalker {
                     documentation,
                 })
             );
-
             return;
         }
 
